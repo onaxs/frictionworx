@@ -1,541 +1,547 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Friction Drive V1 — an electric assist for everyday wheelchairs</title>
-<meta name="description" content="Friction Drive V1 is a compact, removable electric drive that helps manual wheelchair users tackle NYC's steepest hills with 15–20 miles of range.">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>Power Pods by Frictionworx — Making Mobility Easy</title>
+<meta name="description" content="Power Pods by Frictionworx: an ultra-light, quick-mounting electric drive for manual wheelchairs.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Friction Drive V1">
-<meta property="og:description" content="A compact electric assist for everyday manual wheelchairs. 15–20 miles of range, detaches in seconds.">
-<meta property="og:image" content="https://www.xano.me/friction-drive/images/header_photo.gif">
-<meta property="og:url" content="https://www.xano.me/friction-drive/">
+<meta property="og:title" content="Power Pods by Frictionworx — Making Mobility Easy">
+<meta property="og:description" content="An ultra-light, quick-mounting electric drive for manual wheelchairs, in development in New York City.">
+<meta property="og:image" content="https://www.frictionworx.com/assets/hero-dusk-2048.jpg">
+<meta property="og:url" content="https://www.frictionworx.com/">
 <meta name="twitter:card" content="summary_large_image">
-
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="assets/favicon.png" type="image/png">
 <style>
-  :root {
-    --accent: #6B0F1F;
-    --accent-bright: #B83F4F;
-    --bg: #ffffff;
-    --bg-dark: #0a0a0a;
-    --bg-soft: #fafafa;
-    --fg: #111111;
-    --fg-on-dark: #f5f5f5;
-    --muted: #6b6b6b;
-    --muted-on-dark: #b0b6bd;
-    --border: #e5e5e5;
-    --max-w: 1100px;
-  }
+:root{
+  --paper:#fff;--ink:#111;--muted:#5e5e5e;--soft:#efefef;--line:#e2e2e2;
+  --accent:#111;--accent-dark:#000;--accent-tint:#f3f3f3;--error:#111;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --gutter:clamp(20px,5vw,56px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,p{margin:0}
+a{color:inherit}
+img,video{display:block;max-width:100%}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid #111;outline-offset:3px}
+.wrap{width:min(100% - 2 * var(--gutter),1208px);margin-inline:auto}
+.skip-link{position:fixed;top:-80px;left:16px;z-index:10;padding:12px 16px;background:var(--paper);border:1px solid var(--line)}
+.skip-link:focus{top:12px}
 
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+/* Header: sits transparently on top of the hero photo */
+.site-header{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:24px;height:80px;color:#fff;border-bottom:1px solid #ffffff2e}
+.brand{display:inline-flex;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:-.04em;line-height:1;text-decoration:none}
+.brand-mark{width:32px;height:auto;filter:invert(1)}
+.header-contact{display:inline-flex;background:none;color:inherit;align-items:center;min-height:40px;padding:0 16px;border:1px solid #ffffff8c;border-radius:3px;font-size:16px;font-weight:500;line-height:1;text-decoration:none;transition:background .15s,color .15s}
+.header-contact:hover{background:#fff;color:#111}
 
-  :focus-visible {
-    outline: 2px solid var(--accent-bright);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
+/* Hero: full-bleed photo, text over the left on wide screens, centered above the subject on phones.
+   Framing, tune per photo:
+     --pos         object-position on wide screens
+     --pos-mobile  object-position on phones/portrait tablets (centers the subject on the right)
+     --photo-mobile  share of the hero height the photo fills on phones, anchored to the bottom (100% = full bleed) */
+.hero{--pos:50% 75%;--pos-mobile:90% 50%;--photo-mobile:64%;
+  position:relative;isolation:isolate;display:flex;align-items:center;min-height:max(620px,100svh);max-height:1100px;overflow:hidden;background:#000;color:#fff}
+.hero-bg{position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--pos)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(to right,#000000d9 0%,#000000a6 32%,#0000 68%),
+  linear-gradient(to bottom,#00000080,#0000 22%),
+  #0000002e}
+.hero-text{padding-top:80px}
+.hero-text>*{max-width:640px}
+h1{font-size:clamp(46px,5.4vw,88px);line-height:1;letter-spacing:-.05em;font-weight:500}
+.tagline{font-size:clamp(28px,3.1vw,50px);line-height:1.1;letter-spacing:-.035em;font-weight:500;color:#ffffffb3;margin-top:10px}
+.lede{font-size:clamp(17px,1.5vw,20px);line-height:1.6;color:#ffffffd9;max-width:470px;margin-top:28px;padding-top:20px;border-top:1px solid #ffffff59}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.pill{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 22px;border-radius:3px;background:#ffffffb3;-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);color:#111;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s}
+.pill:hover{background:#ffffffe0}
+.pill-solid{background:#fff}
+.pill-solid::after{content:"\2192";font-weight:400}
+.pill-solid:hover{background:#e6e6e6}
+#product{padding-top:72px}
 
-  .skip-link {
-    position: absolute;
-    top: -100px;
-    left: 0;
-    z-index: 1000;
-    padding: 0.75rem 1rem;
-    background: var(--bg-dark);
-    color: var(--fg-on-dark);
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .skip-link:focus { top: 0; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: var(--fg);
-    background: var(--bg);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  img { max-width: 100%; display: block; }
-  a { color: inherit; }
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.card-media{aspect-ratio:1;background:var(--soft);overflow:hidden;border-radius:4px}
+.card-media video,.card-media img{width:100%;height:100%;object-fit:cover}
+.card h2{font-size:clamp(22px,2vw,29px);line-height:1.15;letter-spacing:-.03em;font-weight:500;margin:22px 0 10px}
+.card p{font-size:15px;line-height:1.7;color:var(--muted);max-width:420px}
+/* Hovering one card dims its siblings (mouse/trackpad only, so taps don't leave cards stuck dimmed) */
+.card{transition:opacity .3s ease}
+@media (hover:hover){.cards:has(.card:hover) .card:not(:hover){opacity:.4}}
+.media-controls{display:flex;justify-content:flex-end;margin-top:8px}
+.media-controls button{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:12px 0;min-height:44px}
+.media-controls button:hover{color:var(--accent)}
 
-  /* HERO */
-  .hero {
-    position: relative;
-    min-height: 92vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: var(--fg-on-dark);
-    background: var(--bg-dark) center/cover no-repeat;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
-      url("images/header_photo.gif");
-    padding: 4rem 1.5rem;
-    overflow: hidden;
-  }
-  .hero-inner { max-width: 900px; }
-  .hero h1 {
-    font-size: clamp(2.75rem, 8vw, 5.5rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-    line-height: 1.05;
-  }
-  .hero h1 .glow { color: var(--accent-bright); }
-  .hero p.tagline {
-    font-size: clamp(1.05rem, 2vw, 1.4rem);
-    color: var(--fg-on-dark);
-    opacity: 0.85;
-    margin: 0 0 2.5rem;
-  }
-  .cta {
-    display: inline-block;
-    padding: 0.9rem 2rem;
-    background: var(--accent);
-    color: #fff;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 999px;
-    font-size: 1.05rem;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(107,15,31,0.45); }
+/* Invitation */
+.invite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;column-gap:24px;margin-top:48px;padding-block:64px 80px;border-top:1px solid var(--line)}
+.invite h2{grid-column:1 / span 2;padding-right:48px}
+.invite h2{font-size:clamp(30px,3.4vw,46px);line-height:1.1;letter-spacing:-.035em;font-weight:500;max-width:620px}
+.invite p{font-size:16px;line-height:1.7;color:var(--muted);padding-top:6px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:14px 26px;border-radius:3px;background:var(--accent);color:#fff;font-size:15px;font-weight:600;text-decoration:none;transition:background .15s}
+.button:hover{background:var(--accent-dark)}
+.button:disabled{opacity:.6;cursor:default}
+.invite .button{margin-top:24px}
 
-  /* SECTIONS */
-  section { padding: 5rem 1.5rem; }
-  .container { max-width: var(--max-w); margin: 0 auto; }
-  h2 {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    margin: 0 0 1rem;
-  }
+/* Navy Yard: text in column 1, photo across columns 2-3 (same grid as the cards) */
+.place{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;column-gap:24px;padding-block:64px 80px;border-top:1px solid var(--line)}
+.place h2,.faq h2{font-size:clamp(30px,3.4vw,46px);line-height:1.1;letter-spacing:-.035em;font-weight:500}
+.place p{font-size:16px;line-height:1.7;color:var(--muted);margin-top:20px;max-width:380px}
+.place figure{grid-column:2 / span 2;margin:0;aspect-ratio:3/2;overflow:hidden;border-radius:4px;background:var(--soft)}
+.place figure img{width:100%;height:100%;object-fit:cover;object-position:50% 55%}
 
-  /* BLURB ROWS */
-  .blurb {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  .blurb:nth-of-type(even) .blurb-media { order: -1; }
-  .blurb-text p { font-size: 1.1rem; color: #333; }
-  .blurb-media img {
-    width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-  }
+/* FAQ: heading in column 1, questions across columns 2-3 */
+.faq{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;column-gap:24px;padding-block:64px 88px;border-top:1px solid var(--line)}
+.faq-list{grid-column:2 / span 2;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:44px;padding:20px 0;font-size:19px;font-weight:500;letter-spacing:-.015em;line-height:1.35;cursor:pointer;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;font-size:26px;font-weight:300;line-height:1;transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary:hover{color:#555}
+.faq details p{font-size:16px;line-height:1.7;color:var(--muted);max-width:640px;padding:0 40px 24px 0}
+.faq a,.textlink{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.textlink{padding:0;font:inherit}
 
-  /* SPECS */
-  .specs {
-    background: var(--bg-soft);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .specs-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    text-align: center;
-  }
-  .spec-num {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: 800;
-    color: var(--fg);
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .spec-num .unit { color: var(--accent); }
-  .spec-label {
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-  }
+/* Footer */
+.site-footer{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;padding-block:24px 32px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.site-footer a{text-underline-offset:4px}
+.site-footer a:hover{color:var(--accent)}
+.site-footer .social{margin-left:auto;display:flex;gap:20px}
 
-  /* CAROUSEL */
-  .gallery h2 { text-align: center; margin-bottom: 2.5rem; }
-  .carousel {
-    display: flex;
-    gap: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 0;
-    max-width: var(--max-w);
-    margin: 0 auto;
-    scrollbar-width: none;
-  }
-  .carousel::-webkit-scrollbar { display: none; }
+/* Dialog */
+body:has(dialog[open]){overflow:hidden}
+dialog{width:min(520px,calc(100% - 24px));max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;padding:36px;border:0;border-radius:12px;background:var(--paper);color:var(--ink);box-shadow:0 24px 80px #00000040}
+dialog::backdrop{background:#0000008c;backdrop-filter:blur(3px)}
+.dialog-close{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;font-size:26px;line-height:1;color:var(--muted)}
+.dialog-close:hover{background:var(--soft);color:var(--ink)}
+dialog h2{font-size:28px;line-height:1.15;letter-spacing:-.03em;font-weight:500;margin-right:36px}
+.dialog-sub{font-size:14px;line-height:1.6;color:var(--muted);margin-top:8px}
+form{margin-top:24px;display:grid;gap:22px}
+.label,legend{display:block;font-size:14px;font-weight:600;margin-bottom:8px;padding:0}
+.label .opt{font-weight:400;color:var(--muted)}
+input[type=email],textarea{display:block;width:100%;padding:12px 14px;border:1px solid #c4c4c4;border-radius:6px;background:#fff;font-size:16px}
+input[type=email]:focus,textarea:focus{border-color:var(--accent);outline:2px solid var(--accent-tint);outline-offset:0}
+textarea{resize:vertical;min-height:76px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
 
-  .dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.25rem;
-    margin-top: 1rem;
-  }
-  .dot {
-    width: 10px;
-    height: 10px;
-    padding: 7px;
-    box-sizing: content-box;
-    background-clip: content-box;
-    border-radius: 50%;
-    border: none;
-    background-color: var(--border);
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-  }
-  .dot:hover { background-color: var(--accent-bright); }
-  .dot.active { background-color: var(--accent); transform: scale(1.4); }
-  .carousel img {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 540px;
-    object-fit: cover;
-    border-radius: 12px;
-    scroll-snap-align: start;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  }
+/* Role selector: radio tiles */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.role{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:64px;padding:12px 14px 12px 42px;border:1px solid #c4c4c4;border-radius:8px;cursor:pointer;transition:border-color .12s,background .12s}
+.role:hover{border-color:#8a8a8a}
+.role input{position:absolute;left:14px;top:50%;translate:0 -50%;width:18px;height:18px;margin:0;accent-color:var(--accent)}
+.role strong{font-size:15px;font-weight:600;line-height:1.3}
+.role small{font-size:12px;line-height:1.4;color:var(--muted)}
+.role:has(input:checked){border-color:var(--accent);background:var(--accent-tint);box-shadow:inset 0 0 0 1px var(--accent)}
+.role:has(input:focus-visible){outline:3px solid #111;outline-offset:2px}
+fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
 
-  /* TEAM */
-  .team { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .team h2 { text-align: center; margin-bottom: 2.5rem; }
-  .team-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-  .member { text-align: center; }
-  .member img {
-    width: 320px;
-    height: 320px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin: 0 auto 1rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  }
-  .member .name { font-weight: 700; font-size: 1.1rem; }
-  .member .role { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
-  .member a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-  .member a:hover { border-bottom-color: var(--accent); }
+.check{display:flex;align-items:center;gap:12px;min-height:44px;font-size:15px;cursor:pointer}
+.check input{width:18px;height:18px;margin:0;accent-color:var(--accent);flex:none}
+.error{font-size:13px;font-weight:600;color:var(--error);margin-top:8px}
+.error::before{content:"! "}
+.form-error{padding:12px 14px;border-radius:6px;border:1px solid #111;background:#f3f3f3;color:var(--error);font-size:14px;line-height:1.55}
+.form-error a{font-weight:600}
+.submit{width:100%}
+.fine-print{font-size:11.5px;line-height:1.6;color:var(--muted);text-align:center;margin-top:-8px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.grecaptcha-badge{visibility:hidden}
+.success{margin-top:20px;font-size:16px;line-height:1.7;color:var(--muted)}
+.success .button{margin-top:24px}
 
-  /* TESTIMONIAL */
-  .testimonial { text-align: center; }
-  .testimonial img {
-    width: 320px;
-    height: 320px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin: 0 auto 2rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-  }
-  .testimonial blockquote {
-    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
-    font-weight: 500;
-    line-height: 1.4;
-    max-width: 760px;
-    margin: 0 auto 1.5rem;
-    color: var(--fg);
-    font-style: italic;
-  }
-  .testimonial blockquote::before { content: "\201C"; color: var(--accent); margin-right: 0.1em; }
-  .testimonial blockquote::after  { content: "\201D"; color: var(--accent); margin-left: 0.1em; }
-  .testimonial cite {
-    display: block;
-    font-style: normal;
-    font-size: 0.95rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* SIGNUP */
-  .signup {
-    background: var(--bg-dark);
-    color: var(--fg-on-dark);
-    text-align: center;
-    padding: 6rem 1.5rem;
-  }
-  .signup h2 { color: var(--fg-on-dark); }
-  .signup p {
-    color: var(--muted-on-dark);
-    max-width: 540px;
-    margin: 0.5rem auto 2.5rem;
-    font-size: 1.05rem;
-  }
-  .eo-form-wrap {
-    max-width: 520px;
-    margin: 0 auto;
-  }
-  .signup-form {
-    display: flex;
-    gap: 0.75rem;
-    max-width: 480px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .signup-form input[type="email"] {
-    flex: 1 1 260px;
-    padding: 0.9rem 1.2rem;
-    border: 1px solid #2a2a2a;
-    background: #151515;
-    color: var(--fg-on-dark);
-    border-radius: 999px;
-    font-size: 1rem;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .signup-form input[type="email"]:focus { border-color: var(--accent-bright); }
-  .signup-form button {
-    padding: 0.9rem 2rem;
-    background: var(--accent-bright);
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 1rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .signup-form button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(184,63,79,0.45); }
-  .signup small { display: block; margin-top: 1rem; color: var(--muted-on-dark); font-size: 0.85rem; }
-
-  /* FOOTER */
-  footer {
-    padding: 3rem 1.5rem;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.9rem;
-    border-top: 1px solid var(--border);
-  }
-  footer a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); }
-  footer a:hover { border-bottom-color: var(--accent); }
-  footer .links { margin-bottom: 0.75rem; }
-  footer .links a { margin: 0 0.75rem; }
-  footer .social {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  footer .social a {
-    color: var(--accent);
-    border-bottom: none;
-    display: inline-flex;
-    transition: color 0.15s ease, transform 0.15s ease;
-  }
-  footer .social a:hover { color: var(--accent-bright); transform: translateY(-2px); }
-  footer .social svg { width: 40px; height: 40px; display: block; fill: currentColor; }
-
-  /* MOBILE */
-  @media (max-width: 768px) {
-    section { padding: 3.5rem 1.25rem; }
-    .blurb { grid-template-columns: 1fr; gap: 1.5rem; }
-    .blurb:nth-of-type(even) .blurb-media { order: 0; }
-    .specs-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1rem; }
-    .team-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    .carousel img { height: 340px; }
-  }
-
-  /* REDUCED MOTION */
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-    .dot.active { transform: none; }
-  }
+@media (max-width:900px){
+  /* Phones and portrait tablets: photo re-centers on the subject; text centers at the top, above it */
+  .hero{align-items:flex-start;min-height:max(600px,100svh)}
+  .hero-bg{object-position:var(--pos-mobile);top:auto;height:var(--photo-mobile);
+    -webkit-mask-image:linear-gradient(to bottom,#0000,#000 22%);mask-image:linear-gradient(to bottom,#0000,#000 22%)}
+  .hero::after{background:linear-gradient(to bottom,#000000e0 0%,#000000a6 38%,#0000 62%)}
+  .hero-text{padding-top:104px;text-align:center}
+  .hero-text>*{margin-inline:auto}
+  h1{font-size:clamp(44px,12vw,72px)}
+  .tagline{font-size:clamp(24px,6.5vw,38px);margin-top:6px}
+  .lede{font-size:16px;margin-top:18px;padding-top:16px;max-width:420px}
+  .hero-actions{justify-content:center;margin-top:20px}
+  .cards{gap:18px}
+  .card p{font-size:14px}
+  .invite{grid-template-columns:1fr;row-gap:20px;padding-block:48px 56px}
+  .invite h2{grid-column:auto;padding-right:0}
+  .invite p{padding-top:0;max-width:520px}
+  .place,.faq{grid-template-columns:1fr;row-gap:24px;padding-block:48px 56px}
+  .place figure,.faq-list{grid-column:auto}
+  .place p{max-width:520px;margin-top:14px}
+  .faq summary{font-size:17px}
+}
+@media (max-width:700px){
+  .site-header{height:68px}
+  .brand{font-size:20px;gap:8px}
+  .brand-mark{width:28px}
+  .header-contact{min-height:36px;padding:0 12px;font-size:15px}
+  .cards{grid-template-columns:1fr;gap:36px}
+  .card h2{font-size:25px;margin-top:18px}
+  .invite{margin-top:24px}
+  #product{padding-top:48px}
+  .site-footer .social{margin-left:0}
+  dialog{padding:28px 20px}
+  .roles{grid-template-columns:1fr}
+  .role{min-height:56px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<a class="skip-link" href="#main">Skip to main content</a>
-
-<header class="hero">
-  <div class="hero-inner">
-    <h1>Friction Drive <span class="glow">V1</span></h1>
-    <p class="tagline">A compact electric assist for everyday manual wheelchairs.</p>
-    <a href="#signup" class="cta">Get notified →</a>
-  </div>
+<header class="site-header wrap">
+  <a class="brand" href="#" aria-label="Frictionworx home"><img class="brand-mark" src="assets/logo-mark.png" alt="" width="158" height="160"><span>frictionworx</span></a>
+  <button class="header-contact" type="button" data-open-interest aria-haspopup="dialog">Contact us</button>
 </header>
 
 <main id="main">
-
-<section>
-  <div class="container">
-    <div class="blurb">
-      <div class="blurb-text">
-        <h2>What it is</h2>
-        <p>A removable accessory drive for active manual wheelchair users. Custom motors and a flight compliant battery pack carry you 15 to 20 miles per charge. The whole thing detaches in seconds, so the chair goes back to being light and transportable.</p>
-      </div>
-      <div class="blurb-media">
-        <img src="images/plugin.png" alt="Friction Drive V1 in motion">
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="blurb">
-      <div class="blurb-text">
-        <h2>How it works</h2>
-        <p>Snap on for the long ride home. Pull off to charge. The drive bolts to the chair's existing frame without
-        permanent modification — and the controls mount on either side, at any angle, so they fit your grip rather than the
-        other way around.</p>
-      </div>
-      <div class="blurb-media">
-        <img src="images/mounting.gif" alt="Detach demonstration">
+  <section class="hero" aria-labelledby="hero-title">
+    <img class="hero-bg" src="assets/hero-dusk-2048.jpg" srcset="assets/hero-dusk-1200.jpg 1200w, assets/hero-dusk-2048.jpg 2048w" sizes="100vw" width="2048" height="1153" fetchpriority="high" alt="A manual wheelchair fitted with Power Pods on a Brooklyn sidewalk at dusk, with the downtown skyline behind it.">
+    <div class="hero-text wrap">
+      <h1 id="hero-title">Power Pods</h1>
+      <p class="tagline">Making Mobility Easy</p>
+      <p class="lede">An ultra-light, quick-mounting electric drive for manual wheelchairs. Power Pods are designed to be easy to attach, travel with, and control, all while maintaining the power and battery life that keep you moving.</p>
+      <div class="hero-actions">
+        <a class="pill" href="#product">Explore</a>
+        <button class="pill pill-solid" type="button" data-open-interest aria-haspopup="dialog">Newsletter</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="specs">
-  <div class="container">
-    <div class="specs-grid">
-      <div>
-        <div class="spec-num">15–20<span class="unit"> mi</span></div>
-        <div class="spec-label">Range per charge</div>
-      </div>
-      <div>
-        <div class="spec-num">15<span class="unit"> mph</span></div>
-        <div class="spec-label">Top assist speed</div>
-      </div>
-      <div>
-        <div class="spec-num">25<span class="unit">°</span></div>
-        <div class="spec-label">Max gradient</div>
-      </div>
-      <div>
-        <div class="spec-num">15<span class="unit"> lb</span></div>
-        <div class="spec-label">System weight</div>
-      </div>
+  <section class="wrap" id="product" aria-label="How it fits into your day">
+    <div class="cards">
+      <article class="card">
+        <div class="card-media">
+          <video src="assets/mounting-demo.mp4" poster="assets/mounting-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white shirt, seated in a wheelchair, who puts two soda-can-sized devices onto matching mounts behind the backrest of his wheelchair and pushes down on handles to press them against the tires."></video>
+        </div>
+        <h2>Easy to mount</h2>
+        <p>Designed to attach in moments from your seat, so you can mount it and ride away.</p>
+      </article>
+      <article class="card">
+        <div class="card-media">
+          <video src="assets/driving-demo.mp4" poster="assets/driving-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of two clips. In the first, a man in a white T-shirt moves in a wheelchair alongside a bicycle in a street bike lane without pushing the rims. In the second, a man lifts the front wheels of his wheelchair to move forward over a curb."></video>
+        </div>
+        <h2>Power that keeps up</h2>
+        <p>Designed to keep you moving on everyday routes, from city sidewalks to steep ramps, on the chair you already use.</p>
+      </article>
+      <article class="card">
+        <div class="card-media">
+          <video src="assets/packing-demo.mp4" poster="assets/packing-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white T-shirt who removes two soda-can-sized devices from the back of his wheelchair and a third from the front, clicks them together, and places them inside a bag next to the wheelchair."></video>
+        </div>
+        <h2>Ready for travel</h2>
+        <p>Designed to be ultra lightweight and about the size of a lunch box. Compact enough to carry in your bag.</p>
+      </article>
     </div>
-  </div>
-</section>
+    <div class="media-controls"><button id="motion-toggle" type="button" aria-pressed="false">Pause videos</button></div>
+  </section>
 
-<section class="gallery">
-  <h2>Tested to its limit</h2>
-  <div class="carousel">
-    <img src="images/obstacle_jump_2.gif" alt="Short Curb Hop">
-    <img src="images/header_photo.gif" alt="Hill Climb Test">
-    <img src="images/ramp_test.gif" alt="Gradient climb test">
-  </div>
-</section>
-
-<section class="gallery">
-  <h2>Made with care in NYC</h2>
-  <div class="carousel">
-    <img src="images/welding.gif" alt="Tre Welding">
-    <img src="images/machining.gif" alt="Xano Machining">
-    <img src="images/disturbance.gif" alt="Spencer Testing">
-  </div>
-</section>
-
-<section class="team">
-  <div class="container">
-    <h2>The team</h2>
-    <div class="team-grid">
-      <div class="member">
-        <img src="images/tre_profile.png" alt="Tre Brown">
-        <div class="name">Tre Brown</div>
-        <div class="role">Mechanical Engineer</div>
-        <a href="mailto:tre@frictionworx.com">tre@frictionworx.com</a>
-      </div>
-      <div class="member">
-        <img src="images/spencer_profile.png" alt="Spencer Kirsch">
-        <div class="name">Spencer Kirsch</div>
-        <div class="role">Mechanical Engineer</div>
-        <a href="mailto:spencer@frictionworx.com">spencer@frictionworx.com</a>
-      </div>
-      <div class="member">
-        <img src="images/xano_profile.png" alt="Xano Sweeting">
-        <div class="name">Xano Sweeting</div>
-        <div class="role">Mechanical Engineer</div>
-        <a href="mailto:xano@frictionworx.com">xano@frictionworx.com</a>
-      </div>
+  <section class="invite wrap" id="join" aria-labelledby="invite-title">
+    <h2 id="invite-title">We want your perspectives to shape this product.</h2>
+    <div>
+      <p>Whether you use a manual wheelchair, support someone who does, or work in seating and mobility, we’d like to hear from you as we develop and test prototypes.</p>
+      <button class="button" id="interest-open" type="button" aria-haspopup="dialog">I’m interested</button>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="testimonial">
-  <div class="container">
-    <img src="images/victor_test.gif" alt="Client portrait">
-    <blockquote>This thing is such a game changer</blockquote>
-    <cite>— Victor Calise, former NYC Comissioner for People with Disabilities </cite>
-  </div>
-</section>
+  <section class="place wrap" aria-labelledby="place-title">
+    <div>
+      <h2 id="place-title">We’re developing in the Brooklyn Navy Yard</h2>
+      <p>We design, build and test our prototypes at the Brooklyn Navy Yard in New York City. If you’re nearby and would like to see the device or try a prototype, we’d love to meet you.</p>
+    </div>
+    <figure>
+      <img src="assets/navy-yard.jpg" width="1600" height="1200" loading="lazy" alt="The Frictionworx workshop at the Brooklyn Navy Yard: two team members at workbenches, with manual wheelchairs and a drive prototype lined up by the tool chests.">
+    </figure>
+  </section>
 
-<section class="signup" id="signup">
-  <h2>Be the first to know</h2>
-  <p>Launch updates, build progress, and early access — no spam, unsubscribe anytime.</p>
-
-  <div class="eo-form-wrap">
-    <script async src="https://eocampaign1.com/form/8f7d4b80-48fa-11f1-af56-3744e15c4d6e.js" data-form="8f7d4b80-48fa-11f1-af56-3744e15c4d6e"></script>
-  </div>
-</section>
-
+  <section class="faq wrap" id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Questions</h2>
+    <div class="faq-list">
+      <details>
+        <summary>What is Frictionworx making?</summary>
+        <p>An electric power assist that attaches to a manual wheelchair. It’s designed so you can put it on and take it off yourself while seated, and carry it with you when you don’t need it.</p>
+      </details>
+      <details>
+        <summary>Will it fit my wheelchair?</summary>
+        <p>We’re designing it to fit all manual wheelchairs, including rigid and folding frames. If your setup is unusual, tell us about it in the <button class="textlink" type="button" data-open-interest>interest form</button>. It helps us design for more chairs.</p>
+      </details>
+      <details>
+        <summary>When will it be available, and what will it cost?</summary>
+        <p>It’s still in development, so we don’t have a release date or price yet. <button class="textlink" type="button" data-open-interest>Sign up for updates</button> to hear first.</p>
+      </details>
+      <details>
+        <summary>Why Friction Drive?</summary>
+        <p>When properly set up, friction drive is reliable, safe, and powerful. Friction drive powered the very first electric
+        wheelchair, known as the “Klein Chair”, a major innovation. The Power Pods uses modern materials, a dedicated battery
+        management system and regenerative braking that recovers energy on descents, all in a patent-pending quick-attach method
+        for wheelchair users.</p>
+      </details>
+      <details>
+        <summary>Can I try a prototype?</summary>
+        <p>We’re testing prototypes in New York City. Check “I’d like to try a prototype” in the <button class="textlink" type="button" data-open-interest>interest form</button> and we’ll reach out when there’s a session that fits.</p>
+      </details>
+      <details>
+        <summary>I’m a clinician or ATP. How can I get involved?</summary>
+        <p>We’d value your perspective on fit, setup and who could benefit. Choose “Clinician or ATP” in the <button class="textlink" type="button" data-open-interest>interest form</button>, or email us directly.</p>
+      </details>
+      <details>
+        <summary>How do I reach the team?</summary>
+        <p>Email <a href="mailto:team@frictionworx.com">team@frictionworx.com</a>.</p>
+      </details>
+    </div>
+  </section>
 </main>
 
-<footer>
-  <!-- Replace the href="#" placeholders with your real Facebook / Instagram URLs -->
-  <nav class="social" aria-label="Social media">
-    <a href="https://www.facebook.com/1122894710914755?ref=PROFILE_EDIT_xav_ig_profile_page_web" aria-label="Friction Drive on Facebook" rel="noopener" target="_blank">
-      <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-        <path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07c0 6.02 4.39 11.01 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8v8.44C19.61 23.08 24 18.09 24 12.07Z"/>
-      </svg>
-    </a>
-    <a href="https://www.instagram.com/friction.worx/" aria-label="Friction Drive on Instagram" rel="noopener" target="_blank">
-      <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-        <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07ZM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.12 1.38C1.36 2.67.94 3.34.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.72 1.47 1.38 2.13.66.66 1.33 1.08 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.3 1.47-.72 2.13-1.38.66-.66 1.07-1.33 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.8-.72-1.47-1.38-2.13-.66-.66-1.33-1.08-2.13-1.38-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.41-10.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88Z"/>
-      </svg>
-    </a>
-  </nav>
-  <div>Cooper Union Startup · Friction Drive V1 · 2025–2026</div>
+<footer class="site-footer wrap">
+  <span>Frictionworx · New York City</span>
+  <a href="mailto:team@frictionworx.com">team@frictionworx.com</a>
+  <span class="social">
+    <a href="https://www.instagram.com/friction.worx/" rel="noopener" target="_blank">Instagram</a>
+    <a href="https://www.facebook.com/1122894710914755" rel="noopener" target="_blank">Facebook</a>
+  </span>
 </footer>
 
+<dialog id="interest-dialog" aria-labelledby="dialog-title">
+  <button class="dialog-close" type="button" aria-label="Close">×</button>
+
+  <div id="form-view">
+    <h2 id="dialog-title">Tell us a little about you.</h2>
+    <p class="dialog-sub">We’ll send occasional updates and reach out about prototype testing when it fits.</p>
+
+    <form id="interest-form" novalidate>
+      <div>
+        <label class="label" for="email">Email address</label>
+        <input id="email" name="email" type="email" autofocus autocomplete="email" placeholder="you@example.com" required aria-describedby="email-error">
+        <p id="email-error" class="error" hidden>Please enter a valid email address.</p>
+      </div>
+
+      <fieldset id="role-group" aria-describedby="role-error">
+        <legend>Which best describes you?</legend>
+        <div class="roles" id="roles"><!-- filled from SIGNUP.roles in the script below -->
+        </div>
+        <p id="role-error" class="error" hidden>Please choose the option that fits best.</p>
+      </fieldset>
+
+      <label class="check"><input type="checkbox" name="prototype" value="Prototype testing"> I’d like to try a prototype</label>
+
+      <div>
+        <label class="label" for="note">Anything you’d like us to know? <span class="opt">(optional)</span></label>
+        <textarea id="note" name="note" rows="3" maxlength="1000"></textarea>
+      </div>
+
+      <div class="hp" aria-hidden="true"><input type="text" name="hp" tabindex="-1" autocomplete="off"></div>
+      <div id="recaptcha-slot" class="hp"></div>
+
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+      <button class="button submit" type="submit">Submit</button>
+      <p class="fine-print">We only use your email for Frictionworx updates. Unsubscribe anytime.<br>Protected by reCAPTCHA; Google’s <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>
+    </form>
+  </div>
+
+  <div id="success-view" hidden>
+    <h2 tabindex="-1">Thank you.</h2>
+    <p class="success">You’re on the list. We’ll be in touch with updates, and about testing if you asked to try a prototype.</p>
+    <p class="success"><button class="button" type="button" data-close>Done</button></p>
+  </div>
+</dialog>
+
 <script>
-  document.querySelectorAll('.carousel').forEach(carousel => {
-    const images = Array.from(carousel.querySelectorAll('img'));
-    if (images.length < 2) return;
+/* ── Signup destination ─────────────────────────────────────────────
+   Posts to the existing EmailOctopus form (same list as the old site).
+   Field names must match the form's fields in EmailOctopus. After adding
+   fields there, confirm their numbers by viewing
+   https://eocampaign1.com/form/<formId>.js (see SIGNUP.md).            */
+const SIGNUP = {
+  formId: '8f7d4b80-48fa-11f1-af56-3744e15c4d6e',
+  honeypotName: 'hpc4b27b6e-eb38-11e9-be00-06b4694bee2a',
+  recaptchaSiteKey: '6LdG8skrAAAAAHG0XCORv-FkbuhBc3caWlOFamMH',
+  /* Role options shown in the form. Edit, add or remove lines here; nothing else to change.
+     "label" is what the person sees and what EmailOctopus stores; "hint" is optional small print.
+     (If Role is a Choice field in EmailOctopus rather than Text, its choices must match these labels.) */
+  roles: [
+    { label: 'Wheelchair user' },
+    { label: 'Clinician or ATP', hint: 'PT, OT, seating & mobility' },
+    { label: 'Caregiver or helper' },
+    { label: 'Other' }
+  ],
+  fields: {
+    email: 'field_0',        // Email address
+    role: 'field_1',         // Single-choice field "Role"
+    interests: 'field_2[]',  // Multiple-choice field "Interests" ("Prototype testing")
+    note: 'field_3'          // Text field "Note"
+  }
+};
 
-    const dots = document.createElement('div');
-    dots.className = 'dots';
-    images.forEach((img, i) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      dot.className = 'dot';
-      dot.setAttribute('aria-label', `Go to image ${i + 1}`);
-      dot.addEventListener('click', () => {
-        carousel.scrollTo({ left: i * carousel.clientWidth, behavior: 'smooth' });
+/* ── Role options, built from SIGNUP.roles ───────────────────────── */
+document.getElementById('roles').replaceChildren(...SIGNUP.roles.map(({ label, hint }) => {
+  const el = document.createElement('label');
+  el.className = 'role';
+  const input = Object.assign(document.createElement('input'), { type: 'radio', name: 'role', value: label });
+  const strong = document.createElement('strong');
+  strong.textContent = label;
+  el.append(input, strong);
+  if (hint) {
+    const small = document.createElement('small');
+    small.textContent = hint;
+    el.append(small);
+  }
+  return el;
+}));
+
+/* ── Videos: one shared pause control, respects reduced motion ───── */
+const videos = [...document.querySelectorAll('.card-media video')];
+const motionToggle = document.getElementById('motion-toggle');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let paused = reduceMotion.matches;
+function applyMotion() {
+  videos.forEach(v => paused ? v.pause() : v.play().catch(() => {}));
+  motionToggle.textContent = paused ? 'Play videos' : 'Pause videos';
+  motionToggle.setAttribute('aria-pressed', String(paused));
+}
+motionToggle.addEventListener('click', () => { paused = !paused; applyMotion(); });
+reduceMotion.addEventListener('change', e => { paused = e.matches; applyMotion(); });
+applyMotion();
+
+/* ── Interest dialog ─────────────────────────────────────────────── */
+const dialog = document.getElementById('interest-dialog');
+const form = document.getElementById('interest-form');
+const formView = document.getElementById('form-view');
+const successView = document.getElementById('success-view');
+const emailInput = document.getElementById('email');
+const emailError = document.getElementById('email-error');
+const roleGroup = document.getElementById('role-group');
+const roleError = document.getElementById('role-error');
+const formError = document.getElementById('form-error');
+const submitBtn = form.querySelector('.submit');
+
+function resetDialog() {
+  form.reset();
+  formView.hidden = false;
+  successView.hidden = true;
+  [emailError, roleError, formError].forEach(el => el.hidden = true);
+  emailInput.removeAttribute('aria-invalid');
+  roleGroup.removeAttribute('aria-invalid');
+  setBusy(false);
+}
+function openDialog() {
+  resetDialog();
+  dialog.showModal();
+  loadRecaptcha().catch(() => {});
+}
+document.querySelectorAll('#interest-open,[data-open-interest]').forEach(b => b.addEventListener('click', openDialog));
+dialog.querySelectorAll('.dialog-close,[data-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
+dialog.addEventListener('click', e => {
+  if (e.target !== dialog) return;
+  const r = dialog.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
+});
+if (location.hash === '#signup' || location.hash === '#interested') openDialog();
+
+function setBusy(busy) {
+  submitBtn.disabled = busy;
+  submitBtn.textContent = busy ? 'Sending…' : 'Submit';
+}
+function showFormError(html) {
+  formError.innerHTML = html;
+  formError.hidden = false;
+  setBusy(false);
+}
+
+emailInput.addEventListener('input', () => { if (emailInput.validity.valid) { emailError.hidden = true; emailInput.removeAttribute('aria-invalid'); } });
+form.addEventListener('change', e => {
+  if (e.target.name === 'role') { roleError.hidden = true; roleGroup.removeAttribute('aria-invalid'); }
+});
+
+function validate() {
+  let firstBad = null;
+  const email = emailInput.value.trim();
+  if (!email || !emailInput.checkValidity() || !/\S+@\S+\.\S+/.test(email)) {
+    emailError.hidden = false; emailInput.setAttribute('aria-invalid', 'true'); firstBad = emailInput;
+  }
+  if (!form.querySelector('input[name=role]:checked')) {
+    roleError.hidden = false; roleGroup.setAttribute('aria-invalid', 'true');
+    firstBad = firstBad || form.querySelector('input[name=role]');
+  }
+  if (firstBad) firstBad.focus();
+  return !firstBad;
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  formError.hidden = true;
+  if (!validate()) return;
+  if (form.elements.hp.value) return; // bot
+  setBusy(true);
+  try {
+    await loadRecaptcha();
+    grecaptcha.execute(recaptchaWidget); // continues in onRecaptchaToken
+  } catch {
+    showFormError('The form couldn’t load. Please refresh and try again, or email <a href="mailto:team@frictionworx.com">team@frictionworx.com</a>.');
+  }
+});
+
+/* ── reCAPTCHA (invisible), loaded only when the dialog first opens ─ */
+let recaptchaWidget, recaptchaPromise;
+function loadRecaptcha() {
+  if (recaptchaPromise) return recaptchaPromise;
+  recaptchaPromise = new Promise((resolve, reject) => {
+    window.__fwRecaptchaReady = () => {
+      recaptchaWidget = grecaptcha.render(document.getElementById('recaptcha-slot'), {
+        sitekey: SIGNUP.recaptchaSiteKey, size: 'invisible', isolated: true,
+        callback: onRecaptchaToken,
+        'error-callback': () => showFormError('Verification failed. Please try again.')
       });
-      dots.appendChild(dot);
-    });
-    carousel.parentNode.insertBefore(dots, carousel.nextSibling);
-
-    const dotEls = Array.from(dots.children);
-    dotEls[0].classList.add('active');
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.6) {
-          const idx = images.indexOf(entry.target);
-          dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
-        }
-      });
-    }, { root: carousel, threshold: 0.6 });
-    images.forEach(img => observer.observe(img));
+      resolve();
+    };
+    const s = document.createElement('script');
+    s.src = 'https://www.recaptcha.net/recaptcha/api.js?onload=__fwRecaptchaReady&render=explicit';
+    s.async = true;
+    s.onerror = () => { recaptchaPromise = null; reject(new Error('recaptcha')); };
+    document.head.appendChild(s);
   });
-</script>
+  return recaptchaPromise;
+}
 
+async function onRecaptchaToken(token) {
+  const f = SIGNUP.fields;
+  const data = new URLSearchParams();
+  data.set(f.email, emailInput.value.trim());
+  data.set(f.role, form.querySelector('input[name=role]:checked').value);
+  if (form.elements.prototype.checked) data.append(f.interests, form.elements.prototype.value);
+  const note = form.elements.note.value.trim();
+  if (note) data.set(f.note, note);
+  data.set(SIGNUP.honeypotName, '');
+  data.set('recaptcha-response', token);
+
+  const timeout = new AbortController();
+  const timer = setTimeout(() => timeout.abort(), 15000);
+  try {
+    const res = await fetch('https://eocampaign1.com/form/' + SIGNUP.formId, {
+      method: 'POST', mode: 'cors', cache: 'no-cache', body: data, signal: timeout.signal
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error && json.error.code || 'UNKNOWN');
+    formView.hidden = true;
+    successView.hidden = false;
+    successView.querySelector('h2').focus();
+  } catch (err) {
+    console.warn('Signup failed:', err.message);
+    showFormError('Sorry, something went wrong sending your details. Please try again, or email <a href="mailto:team@frictionworx.com">team@frictionworx.com</a>.');
+  } finally {
+    clearTimeout(timer);
+    if (window.grecaptcha && recaptchaWidget !== undefined) grecaptcha.reset(recaptchaWidget);
+  }
+}
+</script>
 </body>
 </html>
