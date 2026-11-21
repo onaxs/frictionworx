@@ -143,9 +143,10 @@ dialog h2{font-size:28px;line-height:1.15;letter-spacing:-.03em;font-weight:500;
 form{margin-top:24px;display:grid;gap:22px}
 .label,legend{display:block;font-size:14px;font-weight:600;margin-bottom:8px;padding:0}
 .label .opt{font-weight:400;color:var(--muted)}
-input[type=email],textarea{display:block;width:100%;padding:12px 14px;border:1px solid #808080;border-radius:6px;background:#fff;font-size:16px}
-input[type=email]:focus,textarea:focus{border-color:var(--accent);outline:2px solid var(--accent-tint);outline-offset:0}
+input[type=email],input[type=text],textarea{display:block;width:100%;padding:12px 14px;border:1px solid #808080;border-radius:6px;background:#fff;font-size:16px}
+input[type=email]:focus,input[type=text]:focus,textarea:focus{border-color:var(--accent);outline:2px solid var(--accent-tint);outline-offset:0}
 textarea{resize:vertical;min-height:76px}
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 fieldset{border:0;margin:0;padding:0;min-width:0}
 
 /* Role selector: radio tiles */
@@ -159,8 +160,9 @@ fieldset{border:0;margin:0;padding:0;min-width:0}
 .role:has(input:focus-visible){outline:3px solid #111;outline-offset:2px}
 fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
 
-.check{display:flex;align-items:center;gap:12px;min-height:44px;font-size:15px;cursor:pointer}
-.check input{width:18px;height:18px;margin:0;accent-color:var(--accent);flex:none}
+.checks{display:grid;gap:4px}
+.check{display:flex;align-items:center;gap:14px;min-height:48px;font-size:17px;font-weight:500;cursor:pointer}
+.check input{width:24px;height:24px;margin:0;accent-color:var(--accent);flex:none;cursor:pointer}
 .error{font-size:13px;font-weight:600;color:var(--error);margin-top:8px}
 .error::before{content:"! "}
 .form-error{padding:12px 14px;border-radius:6px;border:1px solid #111;background:#f3f3f3;color:var(--error);font-size:14px;line-height:1.55}
@@ -198,6 +200,7 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
   .faq summary{font-size:17px}
 }
 @media (max-width:700px){
+  .name-row{grid-template-columns:1fr}
   .site-header{height:68px}
   .brand{font-size:20px;gap:8px}
   .brand-mark{width:28px}
@@ -354,10 +357,26 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
     <p class="dialog-sub">Choose what you’d like to hear from us about.</p>
 
     <form id="interest-form" novalidate>
+      <div class="name-row">
+        <div>
+          <label class="label" for="first-name">First name <span class="opt">(optional)</span></label>
+          <input id="first-name" name="firstName" type="text" autofocus autocomplete="given-name" maxlength="100">
+        </div>
+        <div>
+          <label class="label" for="last-name">Last name <span class="opt">(optional)</span></label>
+          <input id="last-name" name="lastName" type="text" autocomplete="family-name" maxlength="100">
+        </div>
+      </div>
+
       <div>
         <label class="label" for="email">Email address</label>
-        <input id="email" name="email" type="email" autofocus autocomplete="email" placeholder="you@example.com" required aria-describedby="email-error">
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required aria-describedby="email-error">
         <p id="email-error" class="error" hidden>Please enter a valid email address.</p>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input type="checkbox" name="newsletter" value="Newsletter"> Send me the newsletter</label>
+        <label class="check"><input type="checkbox" name="prototype" value="Prototype testing"> I’d like to try a prototype</label>
       </div>
 
       <fieldset id="role-group" aria-describedby="role-error">
@@ -366,9 +385,6 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
         </div>
         <p id="role-error" class="error" hidden>Please choose the option that fits best.</p>
       </fieldset>
-
-      <label class="check"><input type="checkbox" name="newsletter" value="Newsletter"> Send me the newsletter</label>
-      <label class="check"><input type="checkbox" name="prototype" value="Prototype testing"> I’d like to try a prototype</label>
 
       <div>
         <label class="label" for="note">Anything you’d like us to know? <span class="opt">(optional)</span></label>
@@ -398,31 +414,36 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
    fields there, confirm their numbers by viewing
    https://eocampaign1.com/form/<formId>.js (see SIGNUP.md).            */
 const SIGNUP = {
-  formId: '8f7d4b80-48fa-11f1-af56-3744e15c4d6e',
+  formId: 'f6692ce0-e5e1-11f1-b22d-2959b78bdf53',
   honeypotName: 'hpc4b27b6e-eb38-11e9-be00-06b4694bee2a',
   recaptchaSiteKey: '6LdG8skrAAAAAHG0XCORv-FkbuhBc3caWlOFamMH',
-  /* Role options shown in the form. Edit, add or remove lines here; nothing else to change.
-     "label" is what the person sees and what EmailOctopus stores; "hint" is optional small print.
-     (If Role is a Choice field in EmailOctopus rather than Text, its choices must match these labels.) */
+  /* Role options shown in the form. "label" is what the person sees; "hint" is optional small print.
+     "id" is the choice's number in EmailOctopus's Role field (1 = first choice, 2 = second, …).
+     To add a role, add the choice in EmailOctopus first, then a line here with the matching id. */
   roles: [
-    { label: 'Wheelchair user' },
-    { label: 'Clinician or ATP', hint: 'PT, OT, seating & mobility' },
-    { label: 'Caregiver or helper' },
-    { label: 'Other' }
+    { id: 1, label: 'Wheelchair user' },
+    { id: 2, label: 'Clinician or ATP', hint: 'PT, OT, seating & mobility' },
+    { id: 3, label: 'Caregiver or helper' },
+    { id: 4, label: 'Other' }
   ],
+  /* Choice numbers in EmailOctopus's Interests field */
+  interests: { newsletter: 1, prototype: 2 },
+  /* Field names on form f6692ce0…; choice fields use their column number (see SIGNUP.md) */
   fields: {
     email: 'field_0',        // Email address
-    role: 'field_1',         // Single-choice field "Role"
-    interests: 'field_2[]',  // Multiple-choice field "Interests" ("Newsletter", "Prototype testing")
-    note: 'field_3'          // Text field "Note"
+    firstName: 'field_1',    // Text field "First name"
+    lastName: 'field_2',     // Text field "Last name"
+    role: 'field_6',         // Single-choice field "Role"
+    interests: 'field_7[]',  // Multiple-choice field "Interests"
+    note: 'field_8'          // Text field "Note"
   }
 };
 
 /* ── Role options, built from SIGNUP.roles ───────────────────────── */
-document.getElementById('roles').replaceChildren(...SIGNUP.roles.map(({ label, hint }) => {
+document.getElementById('roles').replaceChildren(...SIGNUP.roles.map(({ id, label, hint }) => {
   const el = document.createElement('label');
   el.className = 'role';
-  const input = Object.assign(document.createElement('input'), { type: 'radio', name: 'role', value: label });
+  const input = Object.assign(document.createElement('input'), { type: 'radio', name: 'role', value: id });
   const strong = document.createElement('strong');
   strong.textContent = label;
   el.append(input, strong);
@@ -585,9 +606,13 @@ async function onRecaptchaToken(token) {
   const f = SIGNUP.fields;
   const data = new URLSearchParams();
   data.set(f.email, emailInput.value.trim());
+  for (const name of ['firstName', 'lastName']) {
+    const value = form.elements[name].value.trim();
+    if (value) data.set(f[name], value);
+  }
   data.set(f.role, form.querySelector('input[name=role]:checked').value);
   for (const name of ['newsletter', 'prototype']) {
-    if (form.elements[name].checked) data.append(f.interests, form.elements[name].value);
+    if (form.elements[name].checked) data.append(f.interests, SIGNUP.interests[name]);
   }
   const note = form.elements.note.value.trim();
   if (note) data.set(f.note, note);

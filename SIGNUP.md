@@ -1,42 +1,65 @@
 # Interest form → EmailOctopus
 
-The “I’m interested” dialog posts directly to the existing EmailOctopus form
-(`8f7d4b80-48fa-11f1-af56-3744e15c4d6e`), so signups land in the same list as before.
-The site's own form replaces EmailOctopus's embed, so the styling is ours. reCAPTCHA and the honeypot work the same way as in the embed.
+The site's signup dialog ("Newsletter", "I'm interested", and the FAQ links) posts directly to
+EmailOctopus form `f6692ce0-e5e1-11f1-b22d-2959b78bdf53` (a pop-up form in EmailOctopus).
+The site uses its own form design and only borrows that form's address, so **don't paste the
+EmailOctopus embed code into the site**, or EmailOctopus's own pop-up will appear as well.
+reCAPTCHA and the anti-spam honeypot work the same way as in the embed.
 
-## One-time setup in EmailOctopus
+## How the fields are set up
 
-The page sends three extra fields. They must exist on the form, or EmailOctopus
-rejects the submission with `INVALID_PARAMETERS`.
+On the mailing list's **Fields** tab:
 
-1. **Create the fields on the list.** Open the mailing list the form feeds, go to the
-   **Fields** tab, and click **Add field** for each:
-   - Label **Role**, Type **Choice (select one)**. Choices, spelled exactly:
-     `Wheelchair user`, `Clinician or ATP`, `Caregiver or helper`, `Other`
-   - Label **Interests**, Type **Choice (select many)**. Two choices: `Newsletter`, `Prototype testing`
-   - Label **Note**, Type **Text**
-2. **Put them on the form.** Go to **Grow → Forms** and open the existing form. Click
-   the sign-up form, then add Role, Interests and Note from the field menu on the left,
-   **in that order**, below the email field. Leave them as regular fields, not hidden,
-   and don't mark them required. Save or publish the form.
-   The site uses its own form, so the look of the EmailOctopus form doesn't matter.
-3. Confirm the field numbers: open
-   `https://eocampaign1.com/form/8f7d4b80-48fa-11f1-af56-3744e15c4d6e.js`. Email is
-   `field_0`; the new fields should be `field_1`, `field_2`, `field_3`. If they differ,
-   update `SIGNUP.fields` near the top of the `<script>` in `index.html`.
-   A multiple-choice field keeps its `[]` suffix (`field_2[]`).
-4. Send one real test signup from the live page and check that the contact shows its Role.
+| Field     | Type                  | Choices (number = order)                                              |
+|-----------|-----------------------|-----------------------------------------------------------------------|
+| Role      | Choice (select one)   | 1 Wheelchair user, 2 Clinician or ATP, 3 Caregiver or helper, 4 Other |
+| Interests | Choice (select many)  | 1 Newsletter, 2 Prototype testing and feedback                        |
+| Note      | Text                  |                                                                       |
 
-## Using the categories
+All three are on the form in Grow → Forms. First name and Last name are also on the form;
+the site doesn't send them, which is fine.
 
-- **Newsletter:** everyone who submits the form is added to the list, but only people who ticked
-  “Send me the newsletter” have `Newsletter` in Interests. Create a segment *Interests contains Newsletter*
-  and send newsletters to that segment, not the whole list.
-- **Segments:** create one per role, e.g. *Role is Clinician or ATP*, to email each group separately.
-- Role shows up as a column on each contact and in CSV exports.
+The site sends:
 
-## Changing the categories
+| Site value               | Form field   | Sent as                                         |
+|--------------------------|--------------|-------------------------------------------------|
+| Email                    | `field_0`    | the address                                     |
+| Role                     | `field_6`    | the choice number (1–4)                         |
+| Newsletter / prototype   | `field_7[]`  | 1 for newsletter, 2 for prototype, one entry each |
+| Note                     | `field_8`    | the text                                        |
 
-Edit the radio `value`s in `index.html` **and** the choices in EmailOctopus. The two must match exactly.
-To let people pick more than one role, change the Role field to multiple choice, set
-`role: 'field_1[]'`, switch the inputs to checkboxes, and append each checked value.
+Choice fields are named by their **column number** in EmailOctopus, not their position on the
+form, and they take the choice's **number**, not its label. These are set in `SIGNUP` near the
+top of the `<script>` in `index.html` (`fields`, `roles[].id`, `interests`).
+
+## Checking the field numbers
+
+If you add, remove or recreate fields, the numbers can change. To check them, download
+`https://eocampaign1.com/form/f6692ce0-e5e1-11f1-b22d-2959b78bdf53.js`. The form's markup is
+stored inside it as base64. Decode it and look for:
+
+- text and email fields: `name="field_N"`
+- choice fields: `data-column-index="N"` (name is `field_N`, plus `[]` for select-many),
+  with the choice numbers in `data-choices`
+
+If anything differs from the table above, update `SIGNUP` in `index.html` to match.
+
+## Testing
+
+Test on the live site, not a local copy (reCAPTCHA and EmailOctopus may refuse other domains).
+Submit once with both boxes ticked and once with neither, then check the two contacts in
+EmailOctopus. If you see "Sorry, something went wrong", open the browser console and look for
+`Signup failed: <code>`. `INVALID_PARAMETERS` means a field name or choice number doesn't match.
+
+## Using the data
+
+- **Newsletter:** everyone who submits is added to the list, but only people who ticked
+  "Send me the newsletter" have Newsletter in Interests. Create a segment
+  *Interests contains Newsletter* and send newsletters to that segment, not the whole list.
+- **Roles:** create a segment per role, e.g. *Role is Clinician or ATP*, to email each group.
+
+## Changing the choices
+
+1. Add or rename the choice in EmailOctopus (list → Fields).
+2. Check its number (see above).
+3. In `index.html`, add or edit the matching line in `SIGNUP.roles` (with its `id`) or `SIGNUP.interests`.
