@@ -13,7 +13,7 @@ rejects the submission with `INVALID_PARAMETERS`.
    **Fields** tab, and click **Add field** for each:
    - Label **Role**, Type **Choice (select one)**. Choices, spelled exactly:
      `Wheelchair user`, `Clinician or ATP`, `Caregiver or helper`, `Other`
-   - Label **Interests**, Type **Choice (select many)**. One choice: `Prototype testing`
+   - Label **Interests**, Type **Choice (select many)**. Two choices: `Newsletter`, `Prototype testing`
    - Label **Note**, Type **Text**
 2. **Put them on the form.** Go to **Grow → Forms** and open the existing form. Click
    the sign-up form, then add Role, Interests and Note from the field menu on the left,
@@ -29,6 +29,9 @@ rejects the submission with `INVALID_PARAMETERS`.
 
 ## Using the categories
 
+- **Newsletter:** everyone who submits the form is added to the list, but only people who ticked
+  “Send me the newsletter” have `Newsletter` in Interests. Create a segment *Interests contains Newsletter*
+  and send newsletters to that segment, not the whole list.
 - **Segments:** create one per role, e.g. *Role is Clinician or ATP*, to email each group separately.
 - Role shows up as a column on each contact and in CSV exports.
 

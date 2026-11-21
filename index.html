@@ -30,6 +30,8 @@ img,video{display:block;max-width:100%}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none}
 :focus-visible{outline:3px solid #111;outline-offset:3px}
+.site-header :focus-visible,.hero :focus-visible{outline-color:#fff}
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .wrap{width:min(100% - 2 * var(--gutter),1208px);margin-inline:auto}
 .skip-link{position:fixed;top:-80px;left:16px;z-index:10;padding:12px 16px;background:var(--paper);border:1px solid var(--line)}
 .skip-link:focus{top:12px}
@@ -44,9 +46,13 @@ button{cursor:pointer;border:0;background:none}
 /* Hero: full-bleed photo, text over the left on wide screens, centered above the subject on phones.
    Framing, tune per photo:
      --pos         object-position on wide screens
-     --pos-mobile  object-position on phones/portrait tablets (centers the subject on the right)
-     --photo-mobile  share of the hero height the photo fills on phones, anchored to the bottom (100% = full bleed) */
-.hero{--pos:50% 75%;--pos-mobile:90% 50%;--photo-mobile:64%;
+     --subject-x   horizontal center of the subject (the wheelchair) as a share of the photo width;
+                   phones center the photo on this point
+     --subject-top top of the subject as a share of the photo height; phones keep the text above this line
+     --ratio       photo width / height
+     --photo-h     photo height on phones, anchored to the bottom of the hero */
+.hero{--pos:50% 75%;--subject-x:.74;--subject-top:.38;--ratio:1.7766;
+  --photo-h:max(calc(100vw / var(--ratio)),min(60svh,560px));
   position:relative;isolation:isolate;display:flex;align-items:center;min-height:max(620px,100svh);max-height:1100px;overflow:hidden;background:#000;color:#fff}
 .hero-bg{position:absolute;z-index:-2;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--pos)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
@@ -72,12 +78,15 @@ h1{font-size:clamp(46px,5.4vw,88px);line-height:1;letter-spacing:-.05em;font-wei
 .card-media video,.card-media img{width:100%;height:100%;object-fit:cover}
 .card h2{font-size:clamp(22px,2vw,29px);line-height:1.15;letter-spacing:-.03em;font-weight:500;margin:22px 0 10px}
 .card p{font-size:15px;line-height:1.7;color:var(--muted);max-width:420px}
-/* Hovering one card dims its siblings (mouse/trackpad only, so taps don't leave cards stuck dimmed) */
-.card{transition:opacity .3s ease}
-@media (hover:hover){.cards:has(.card:hover) .card:not(:hover){opacity:.4}}
-.media-controls{display:flex;justify-content:flex-end;margin-top:8px}
-.media-controls button{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:12px 0;min-height:44px}
-.media-controls button:hover{color:var(--accent)}
+/* Hovering one card dims the other cards' videos (text stays full contrast; mouse/trackpad only) */
+.card-media{transition:opacity .3s ease}
+@media (hover:hover){.cards:has(.card:hover) .card:not(:hover) .card-media{opacity:.4}}
+.media-controls{display:flex;justify-content:flex-end;margin-bottom:16px}
+.media-controls button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:3px;font-size:14px;font-weight:500;color:var(--ink);transition:background .15s,color .15s}
+.media-controls button:hover{background:var(--ink);color:#fff}
+/* Icon drawn with borders: two bars (pause) or a triangle (play) */
+.media-controls button::before{content:"";width:9px;height:11px;box-sizing:border-box;border-inline:3px solid currentColor}
+.media-controls button[aria-pressed=true]::before{width:0;height:0;border-block:6px solid transparent;border-inline:10px solid currentColor;border-inline-end:0}
 
 /* Invitation */
 .invite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;column-gap:24px;margin-top:48px;padding-block:64px 80px;border-top:1px solid var(--line)}
@@ -123,18 +132,26 @@ dialog::backdrop{background:#0000008c;backdrop-filter:blur(3px)}
 .dialog-close:hover{background:var(--soft);color:var(--ink)}
 dialog h2{font-size:28px;line-height:1.15;letter-spacing:-.03em;font-weight:500;margin-right:36px}
 .dialog-sub{font-size:14px;line-height:1.6;color:var(--muted);margin-top:8px}
+/* Contact dialog: team email with a copy button */
+#contact-dialog{width:min(440px,calc(100% - 24px))}
+.email-box{display:flex;align-items:center;gap:8px;margin-top:24px;padding:6px 6px 6px 14px;border:1px solid #808080;border-radius:6px}
+.email-box span{flex:1;min-width:0;overflow-wrap:anywhere;font-size:17px;font-weight:500;user-select:all}
+.copy-btn{flex:none;min-height:44px;padding:0 16px;border-radius:4px;background:var(--ink);color:#fff;font-size:14px;font-weight:600}
+.copy-btn:hover{background:#333}
+.copy-status{font-size:14px;color:var(--muted)}
+.copy-status:not(:empty){margin-top:12px}
 form{margin-top:24px;display:grid;gap:22px}
 .label,legend{display:block;font-size:14px;font-weight:600;margin-bottom:8px;padding:0}
 .label .opt{font-weight:400;color:var(--muted)}
-input[type=email],textarea{display:block;width:100%;padding:12px 14px;border:1px solid #c4c4c4;border-radius:6px;background:#fff;font-size:16px}
+input[type=email],textarea{display:block;width:100%;padding:12px 14px;border:1px solid #808080;border-radius:6px;background:#fff;font-size:16px}
 input[type=email]:focus,textarea:focus{border-color:var(--accent);outline:2px solid var(--accent-tint);outline-offset:0}
 textarea{resize:vertical;min-height:76px}
 fieldset{border:0;margin:0;padding:0;min-width:0}
 
 /* Role selector: radio tiles */
 .roles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.role{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:64px;padding:12px 14px 12px 42px;border:1px solid #c4c4c4;border-radius:8px;cursor:pointer;transition:border-color .12s,background .12s}
-.role:hover{border-color:#8a8a8a}
+.role{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:64px;padding:12px 14px 12px 42px;border:1px solid #808080;border-radius:8px;cursor:pointer;transition:border-color .12s,background .12s}
+.role:hover{border-color:#333}
 .role input{position:absolute;left:14px;top:50%;translate:0 -50%;width:18px;height:18px;margin:0;accent-color:var(--accent)}
 .role strong{font-size:15px;font-weight:600;line-height:1.3}
 .role small{font-size:12px;line-height:1.4;color:var(--muted)}
@@ -158,10 +175,13 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
 @media (max-width:900px){
   /* Phones and portrait tablets: photo re-centers on the subject; text centers at the top, above it */
   .hero{align-items:flex-start;min-height:max(600px,100svh)}
-  .hero-bg{object-position:var(--pos-mobile);top:auto;height:var(--photo-mobile);
+  /* Photo pinned to the bottom at a fixed height; offset so the wheelchair sits at the horizontal center */
+  .hero-bg{top:auto;height:var(--photo-h);
+    object-position:clamp(100vw - var(--photo-h) * var(--ratio), 50vw - var(--photo-h) * var(--ratio) * var(--subject-x), 0px) 100%;
     -webkit-mask-image:linear-gradient(to bottom,#0000,#000 22%);mask-image:linear-gradient(to bottom,#0000,#000 22%)}
-  .hero::after{background:linear-gradient(to bottom,#000000e0 0%,#000000a6 38%,#0000 62%)}
-  .hero-text{padding-top:104px;text-align:center}
+  .hero::after{background:linear-gradient(to bottom,#000000e0 0%,#000000a6 calc(100% - var(--photo-h)),#0000 calc(100% - var(--photo-h) * (1 - var(--subject-top) + .08)))}
+  /* Bottom padding reserves room for the wheelchair, so the text never overlaps it */
+  .hero-text{padding-top:104px;padding-bottom:calc(var(--photo-h) * (1 - var(--subject-top)) + 56px);text-align:center}
   .hero-text>*{margin-inline:auto}
   h1{font-size:clamp(44px,12vw,72px)}
   .tagline{font-size:clamp(24px,6.5vw,38px);margin-top:6px}
@@ -202,7 +222,7 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
 
 <header class="site-header wrap">
   <a class="brand" href="#" aria-label="Frictionworx home"><img class="brand-mark" src="assets/logo-mark.png" alt="" width="158" height="160"><span>frictionworx</span></a>
-  <button class="header-contact" type="button" data-open-interest aria-haspopup="dialog">Contact us</button>
+  <button class="header-contact" type="button" data-open-contact aria-haspopup="dialog">Contact us</button>
 </header>
 
 <main id="main">
@@ -220,36 +240,36 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
   </section>
 
   <section class="wrap" id="product" aria-label="How it fits into your day">
+    <div class="media-controls"><button id="motion-toggle" type="button" aria-pressed="false">Pause videos</button></div>
     <div class="cards">
       <article class="card">
         <div class="card-media">
-          <video src="assets/mounting-demo.mp4" poster="assets/mounting-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white shirt, seated in a wheelchair, who puts two soda-can-sized devices onto matching mounts behind the backrest of his wheelchair and pushes down on handles to press them against the tires."></video>
+          <video src="assets/mounting-demo.mp4" poster="assets/mounting-demo.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white shirt, seated in a wheelchair, who puts two soda-can-sized devices onto matching mounts behind the backrest of his wheelchair and pushes down on handles to press them against the tires."></video>
         </div>
         <h2>Easy to mount</h2>
-        <p>Designed to attach in moments from your seat, so you can mount it and ride away.</p>
+        <p>Attaches in seconds and within arm’s reach, so you can mount it and ride away.</p>
       </article>
       <article class="card">
         <div class="card-media">
-          <video src="assets/driving-demo.mp4" poster="assets/driving-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of two clips. In the first, a man in a white T-shirt moves in a wheelchair alongside a bicycle in a street bike lane without pushing the rims. In the second, a man lifts the front wheels of his wheelchair to move forward over a curb."></video>
+          <video src="assets/driving-demo.mp4" poster="assets/driving-demo.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Looped video of two clips. In the first, a man in a white T-shirt moves in a wheelchair alongside a bicycle in a street bike lane without pushing the rims. In the second, a man lifts the front wheels of his wheelchair to move forward over a curb."></video>
         </div>
         <h2>Power that keeps up</h2>
-        <p>Designed to keep you moving on everyday routes, from city sidewalks to steep ramps, on the chair you already use.</p>
+        <p>Keeps you moving on everyday routes, from city sidewalks to steep ramps, on the chair you already use.</p>
       </article>
       <article class="card">
         <div class="card-media">
-          <video src="assets/packing-demo.mp4" poster="assets/packing-demo.jpg" muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white T-shirt who removes two soda-can-sized devices from the back of his wheelchair and a third from the front, clicks them together, and places them inside a bag next to the wheelchair."></video>
+          <video src="assets/packing-demo.mp4" poster="assets/packing-demo.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Looped video of a man in a white T-shirt who removes two soda-can-sized devices from the back of his wheelchair and a third from the front, clicks them together, and places them inside a bag next to the wheelchair."></video>
         </div>
         <h2>Ready for travel</h2>
-        <p>Designed to be ultra lightweight and about the size of a lunch box. Compact enough to carry in your bag.</p>
+        <p>Ultra lightweight and about the size of a lunch box. Compact enough to carry in your bag without displacing your other belongings.</p>
       </article>
     </div>
-    <div class="media-controls"><button id="motion-toggle" type="button" aria-pressed="false">Pause videos</button></div>
   </section>
 
   <section class="invite wrap" id="join" aria-labelledby="invite-title">
     <h2 id="invite-title">We want your perspectives to shape this product.</h2>
     <div>
-      <p>Whether you use a manual wheelchair, support someone who does, or work in seating and mobility, we’d like to hear from you as we develop and test prototypes.</p>
+      <p>Whether you use a wheelchair, support someone who does, or work in seating and mobility, we’d like to hear from you as we develop and test prototypes.</p>
       <button class="button" id="interest-open" type="button" aria-haspopup="dialog">I’m interested</button>
     </div>
   </section>
@@ -276,15 +296,12 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
         <p>We’re designing it to fit all manual wheelchairs, including rigid and folding frames. If your setup is unusual, tell us about it in the <button class="textlink" type="button" data-open-interest>interest form</button>. It helps us design for more chairs.</p>
       </details>
       <details>
-        <summary>When will it be available, and what will it cost?</summary>
-        <p>It’s still in development, so we don’t have a release date or price yet. <button class="textlink" type="button" data-open-interest>Sign up for updates</button> to hear first.</p>
+        <summary>How is it controlled?</summary>
+        <p>We’re currently developing three control methods: push assist, a speed dial and a joystick. All options will have a hardwired stop function, and the Power Pods are also capable of braking.</p>
       </details>
       <details>
-        <summary>Why Friction Drive?</summary>
-        <p>When properly set up, friction drive is reliable, safe, and powerful. Friction drive powered the very first electric
-        wheelchair, known as the “Klein Chair”, a major innovation. The Power Pods uses modern materials, a dedicated battery
-        management system and regenerative braking that recovers energy on descents, all in a patent-pending quick-attach method
-        for wheelchair users.</p>
+        <summary>When will it be available, and what will it cost?</summary>
+        <p>It’s still in development, so we don’t have a release date or price yet. <button class="textlink" type="button" data-open-interest>Sign up for updates</button> to hear first.</p>
       </details>
       <details>
         <summary>Can I try a prototype?</summary>
@@ -293,6 +310,13 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
       <details>
         <summary>I’m a clinician or ATP. How can I get involved?</summary>
         <p>We’d value your perspective on fit, setup and who could benefit. Choose “Clinician or ATP” in the <button class="textlink" type="button" data-open-interest>interest form</button>, or email us directly.</p>
+      </details>
+      <details>
+        <summary>Why Friction Drive?</summary>
+        <p>When properly set up, friction drive is reliable, safe, and powerful. Friction drive powered the very first electric
+        wheelchair, known as the “Klein Chair”, a major innovation. The Power Pods uses modern materials, a dedicated battery
+        management system and regenerative braking that recovers energy on descents, all in a patent-pending quick-attach method
+        for wheelchair users.</p>
       </details>
       <details>
         <summary>How do I reach the team?</summary>
@@ -306,17 +330,28 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
   <span>Frictionworx · New York City</span>
   <a href="mailto:team@frictionworx.com">team@frictionworx.com</a>
   <span class="social">
-    <a href="https://www.instagram.com/friction.worx/" rel="noopener" target="_blank">Instagram</a>
-    <a href="https://www.facebook.com/1122894710914755" rel="noopener" target="_blank">Facebook</a>
+    <a href="https://www.instagram.com/friction.worx/" rel="noopener" target="_blank">Instagram<span class="visually-hidden"> (opens in new tab)</span></a>
+    <a href="https://www.facebook.com/1122894710914755" rel="noopener" target="_blank">Facebook<span class="visually-hidden"> (opens in new tab)</span></a>
+    <a href="https://www.linkedin.com/company/frictionworx" rel="noopener" target="_blank">LinkedIn<span class="visually-hidden"> (opens in new tab)</span></a>
   </span>
 </footer>
+
+<dialog id="contact-dialog" aria-labelledby="contact-title">
+  <button class="dialog-close" type="button" aria-label="Close">×</button>
+  <h2 id="contact-title">Contact the team</h2>
+  <div class="email-box">
+    <span id="team-email">team@frictionworx.com</span>
+    <button class="copy-btn" id="copy-email" type="button">Copy</button>
+  </div>
+  <p class="copy-status" id="copy-status" role="status"></p>
+</dialog>
 
 <dialog id="interest-dialog" aria-labelledby="dialog-title">
   <button class="dialog-close" type="button" aria-label="Close">×</button>
 
   <div id="form-view">
     <h2 id="dialog-title">Tell us a little about you.</h2>
-    <p class="dialog-sub">We’ll send occasional updates and reach out about prototype testing when it fits.</p>
+    <p class="dialog-sub">Choose what you’d like to hear from us about.</p>
 
     <form id="interest-form" novalidate>
       <div>
@@ -332,6 +367,7 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
         <p id="role-error" class="error" hidden>Please choose the option that fits best.</p>
       </fieldset>
 
+      <label class="check"><input type="checkbox" name="newsletter" value="Newsletter"> Send me the newsletter</label>
       <label class="check"><input type="checkbox" name="prototype" value="Prototype testing"> I’d like to try a prototype</label>
 
       <div>
@@ -344,13 +380,13 @@ fieldset[aria-invalid=true] .role{border-color:#111;border-style:dashed}
 
       <p id="form-error" class="form-error" role="alert" hidden></p>
       <button class="button submit" type="submit">Submit</button>
-      <p class="fine-print">We only use your email for Frictionworx updates. Unsubscribe anytime.<br>Protected by reCAPTCHA; Google’s <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>
+      <p class="fine-print">We only use your email to contact you about Frictionworx. Unsubscribe anytime.<br>Protected by reCAPTCHA; Google’s <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy<span class="visually-hidden"> (opens in new tab)</span></a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms<span class="visually-hidden"> (opens in new tab)</span></a> apply.</p>
     </form>
   </div>
 
   <div id="success-view" hidden>
     <h2 tabindex="-1">Thank you.</h2>
-    <p class="success">You’re on the list. We’ll be in touch with updates, and about testing if you asked to try a prototype.</p>
+    <p class="success">We’ve got your details. We’ll send the newsletter if you asked for it, and reach out about testing if you’d like to try a prototype.</p>
     <p class="success"><button class="button" type="button" data-close>Done</button></p>
   </div>
 </dialog>
@@ -377,7 +413,7 @@ const SIGNUP = {
   fields: {
     email: 'field_0',        // Email address
     role: 'field_1',         // Single-choice field "Role"
-    interests: 'field_2[]',  // Multiple-choice field "Interests" ("Prototype testing")
+    interests: 'field_2[]',  // Multiple-choice field "Interests" ("Newsletter", "Prototype testing")
     note: 'field_3'          // Text field "Note"
   }
 };
@@ -398,18 +434,23 @@ document.getElementById('roles').replaceChildren(...SIGNUP.roles.map(({ label, h
   return el;
 }));
 
-/* ── Videos: one shared pause control, respects reduced motion ───── */
+/* ── Videos: autoplay for everyone, one shared pause control ─────── */
 const videos = [...document.querySelectorAll('.card-media video')];
 const motionToggle = document.getElementById('motion-toggle');
-const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-let paused = reduceMotion.matches;
+let paused = false;
 function applyMotion() {
   videos.forEach(v => paused ? v.pause() : v.play().catch(() => {}));
   motionToggle.textContent = paused ? 'Play videos' : 'Pause videos';
   motionToggle.setAttribute('aria-pressed', String(paused));
 }
 motionToggle.addEventListener('click', () => { paused = !paused; applyMotion(); });
-reduceMotion.addEventListener('change', e => { paused = e.matches; applyMotion(); });
+// Retry when a video becomes playable, when the page is restored from the
+// back/forward cache, and on the first interaction if autoplay was blocked
+// (e.g. Safari Low Power Mode).
+videos.forEach(v => v.addEventListener('canplay', () => { if (!paused && v.paused) v.play().catch(() => {}); }));
+addEventListener('pageshow', applyMotion);
+['pointerdown', 'keydown', 'touchstart', 'scroll'].forEach(type =>
+  addEventListener(type, () => { if (!paused) applyMotion(); }, { once: true, passive: true }));
 applyMotion();
 
 /* ── Interest dialog ─────────────────────────────────────────────── */
@@ -439,11 +480,39 @@ function openDialog() {
   loadRecaptcha().catch(() => {});
 }
 document.querySelectorAll('#interest-open,[data-open-interest]').forEach(b => b.addEventListener('click', openDialog));
-dialog.querySelectorAll('.dialog-close,[data-close]').forEach(b => b.addEventListener('click', () => dialog.close()));
-dialog.addEventListener('click', e => {
-  if (e.target !== dialog) return;
-  const r = dialog.getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close();
+// Close buttons and clicks on the backdrop close either dialog
+document.querySelectorAll('dialog').forEach(d => {
+  d.querySelectorAll('.dialog-close,[data-close]').forEach(b => b.addEventListener('click', () => d.close()));
+  d.addEventListener('click', e => {
+    if (e.target !== d) return;
+    const r = d.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close();
+  });
+});
+
+/* ── Contact dialog: team email with a copy button ───────────────── */
+const contactDialog = document.getElementById('contact-dialog');
+const copyBtn = document.getElementById('copy-email');
+const copyStatus = document.getElementById('copy-status');
+const teamEmail = document.getElementById('team-email').textContent;
+document.querySelectorAll('[data-open-contact]').forEach(b => b.addEventListener('click', () => {
+  copyStatus.textContent = '';
+  copyBtn.textContent = 'Copy';
+  contactDialog.showModal();
+  copyBtn.focus();
+}));
+copyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(teamEmail);
+    copyBtn.textContent = 'Copied';
+    copyStatus.classList.add('visually-hidden'); // button already shows "Copied"; this is for screen readers
+    copyStatus.textContent = 'Email address copied to clipboard.';
+  } catch {
+    // Clipboard blocked (e.g. non-HTTPS): select the address so it can be copied by hand
+    getSelection().selectAllChildren(document.getElementById('team-email'));
+    copyStatus.classList.remove('visually-hidden');
+    copyStatus.textContent = 'Press Ctrl+C or ⌘C to copy.';
+  }
 });
 if (location.hash === '#signup' || location.hash === '#interested') openDialog();
 
@@ -517,7 +586,9 @@ async function onRecaptchaToken(token) {
   const data = new URLSearchParams();
   data.set(f.email, emailInput.value.trim());
   data.set(f.role, form.querySelector('input[name=role]:checked').value);
-  if (form.elements.prototype.checked) data.append(f.interests, form.elements.prototype.value);
+  for (const name of ['newsletter', 'prototype']) {
+    if (form.elements[name].checked) data.append(f.interests, form.elements[name].value);
+  }
   const note = form.elements.note.value.trim();
   if (note) data.set(f.note, note);
   data.set(SIGNUP.honeypotName, '');
